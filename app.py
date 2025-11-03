@@ -4,7 +4,7 @@ import pandas as pd
 import plotly.express as px
 import gradio as gr
 
-# ---- Config ----
+# Config
 DATAFILE = os.getenv("DEFAULT_DATAFILE", "customer_acquisition_data.csv")
 REQUIRED_COLS = ["customer_id", "channel", "cost", "conversion_rate", "revenue"]
 
@@ -58,13 +58,13 @@ def load_uploaded(file):
     df = pd.read_csv(file.name if hasattr(file, "name") else file)
     return _compute_metrics(df)
 
-# ---- Plots ----
+# Plots
 def hist(df, col, title): return px.histogram(df, x=col, nbins=20, title=title)
 def bar(df, x, y, title): return px.bar(df, x=x, y=y, title=title)
 def pie(df): return px.pie(df, values="total_revenue", names="channel", title="Total Revenue by Channel", hole=0.6)
 def cltv_box(df): return px.box(df, x="channel", y="cltv", title="CLTV Distribution by Channel")
 
-# ---- Simulator ----
+# Simulator
 def simulate_reallocation(by_df: pd.DataFrame, allocations_json: str):
     try:
         alloc = json.loads(allocations_json or "{}")
@@ -104,7 +104,7 @@ def simulate_reallocation(by_df: pd.DataFrame, allocations_json: str):
     )
     return text, delta
 
-# ---- Gradio UI ----
+# Gradio UI
 with gr.Blocks(title="CLTV & ROI Dashboard", css="footer {visibility: hidden;}") as demo:
     gr.Markdown(
         "## Customer Lifetime Value (CLTV) & ROI Dashboard\n"
@@ -161,7 +161,7 @@ with gr.Blocks(title="CLTV & ROI Dashboard", css="footer {visibility: hidden;}")
         dl2 = gr.File(label="Channel summary CSV", interactive=False)
         gen_btn = gr.Button("Generate CSVs")
 
-    # ---- Callbacks ----
+    # Callbacks
     def _render(df, by, meta, msg_prefix):
         state = (df, by, meta)
         status_text = f"{msg_prefix} • rows: {meta['rows']} • channels: {meta['channels']}"
